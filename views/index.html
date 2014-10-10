@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<script type="text/javascript" src="javascripts/map.js"></script>
+
+
+        <div class="col-md-3">
+    		<div class="selectday">
+    			<h1>Select Day</h1>
+    			<div class="btn-group" id="days">
+    			  <button type="button" class="btn btn-default btn-primary btn-sm" >Day 1</button>
+    			</div>
+    			<div class="btn-group">
+    			  <button type="button" class="btn btn-default btn-sm addDay">+ Add Day</button>
+    			</div>
+    		</div>
+    		<div class="planBox">
+	    		<div class="dayplan">
+	    			<h2 id="dayNum">Day 1</h2>
+	    			<ul>
+	    				<li><h3>Hotel</h3></li>
+	    					<ul id = "hotelArr">
+
+	    					</ul>
+	    				<li><h3>Things to do</h3></li>
+	    					<ul id = "thingsArr">
+	    					</ul>
+	    				<li><h3>Restaurants</h3></li>
+	    					<ul id = "restaurantsArr">
+	    					</ul>
+	    			</ul>
+	    		</div>
+	    	</div>
+	    </div>
+	    <div class="col-md-9">
+	    	<div class="dropdown" >
+
+	    		<div class="place col-md-4">
+	    			<p><h1>Hotels</h1></p>
+	    			<div>
+	    			  <button type="button" class="btn btn-default dropdown-toggle" id="hotelSelect" data-toggle="dropdown">
+	    			    Select One  <span class="caret"></span>
+	    			  </button>
+	    			  <ul class="dropdown-menu" id="hotelDrop" role="menu">
+	    			  	{% for hotel in hotels %}
+	    			    <li><a class="choice hotelList" href="#">{{hotel.name}}</a></li>
+	    			    {% endfor %}
+	    			  </ul>
+	    			  <button type="button" class="btn btn-primary" id="addHotel">Add</button>
+	    			</div>
+	    		</div>
+
+	    		<div class="place col-md-4">
+	    			<p><h1>Things to do</h1></p>
+	    			<div>
+	    			  <button type="button" class="btn btn-default dropdown-toggle" id="thingSelect" data-toggle="dropdown">
+	    			    Select One  <span class="caret"></span>
+	    			  </button>
+	    			  <ul class="dropdown-menu" role="menu">
+	    			  	  {% for thingToDo in thingsToDo %}
+	    			  	  <li><a class="choice thingsList" href="#">{{thingToDo.name}}</a></li>
+	    			  	  {% endfor %}
+	    			  </ul>
+	    			  <button type="button" class="btn btn-primary" id="addThing">Add</button>
+
+	    			</div>
+	    		</div>
+
+	    		<div class="place col-md-4">
+	    			<p><h1>Restaurants</h1></p>
+	    			<div>
+	    			  <button type="button" class="btn btn-default dropdown-toggle" id="restaurantSelect" data-toggle="dropdown">
+	    			    Select One  <span class="caret"></span>
+	    			  </button>
+	    			  <ul class="dropdown-menu" role="menu">
+	    			  	{% for restaurant in restaurants %}
+	    			  	<li><a class="choice restaurantList" href="#">{{restaurant.name}}</a></li>
+	    			  	{% endfor %}
+	    			  </ul>
+	    			  <button type="button" class="btn btn-primary" id="addRestaurant">Add</button>
+
+	    			</div>
+	    		</div>
+	    	</div>
+	    	<div class="map col-md-12">
+	    		<h2>Map</h2>
+	    		<div id="map_canvas"></div>
+	    	</div>
+	    </div>
+
+<script>
+ 
+{% autoescape false %}
+var all_hotels = {{ hotels | json }};
+var all_restaurants = {{ restaurants | json }};
+var all_things_to_do = {{ thingsToDo | json }};
+{% endautoescape %}
+ 
+</script>
+
+
+
+{% endblock %}
+
+
+
