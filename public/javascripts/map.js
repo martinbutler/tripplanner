@@ -1,3 +1,7 @@
+var days = [],
+    selectedIndex = 0;
+addDay();
+
 
 var map;
 var marker;
@@ -110,12 +114,19 @@ $(document).ready(function() {
 
 var hotelArray, restaurantArray, thingArray;
 
-var days = [{
-    hotel: null,
-    thingsToDo: [],
-    restaurants: []
-  }],
-    selectedIndex = 0;
+function writeVisitToServer(attraction_id, dayId, type_of_place) {
+ var post_data = {
+   attraction_id: attraction_id,
+   attraction_type: type_of_place,
+   dayId: dayId
+ };
+
+ var post_callback = function (responseData) {
+   console.log("ding");
+ };
+
+ $.post("/days/" + dayId + "/attractions", post_data, post_callback);
+}
 
 function addDay() {
     days.push({
@@ -123,8 +134,21 @@ function addDay() {
     thingsToDo: [],
     restaurants: []
   });
+    writeDayToServer(selectedIndex);
 }
 
+
+function writeDayToServer(dayId){
+    var post_data = {
+    dayId: dayId
+  };
+
+    var post_callback = function(responseData){
+      console.log("dig");
+    }
+
+    $.post("/days", post_data, post_callback);
+}
 
 $(function(){
   $('.dropdown-menu li a').click(function(e){
@@ -168,6 +192,7 @@ $(function(){
     $('#hotelArr').html('<li>' + val + '<br><a class="delete">Remove</a></li>');
     for (i=0, n = all_hotels.length; i<n; i++){
        if(all_hotels[i].name == val) {
+        writeVisitToServer(all_hotels[i]._id, selectedIndex, "hotel")
          days[selectedIndex].hotel = all_hotels[i];
          initialize_gmaps();
        }
@@ -181,6 +206,7 @@ $(function(){
     $('#thingsArr').append('<li>' + val + '<br><a class="delete">Remove</a></li>');
     for (i=0, n = all_things_to_do.length; i<n; i++){
        if(all_things_to_do[i].name == val) {
+        writeVisitToServer(all_things_to_do[i]._id, selectedIndex, "thing")
          days[selectedIndex].thingsToDo.push(all_things_to_do[i]);
          initialize_gmaps(all_things_to_do[i].place[0].location[0], all_things_to_do[i].place[0].location[1]);
        }
@@ -195,6 +221,7 @@ $(function(){
       $('#restaurantsArr').append('<li>' + val + '<br><a class="delete">Remove</a></li>');
       for (i=0, n = all_restaurants.length; i<n; i++){
          if(all_restaurants[i].name == val) {
+           writeVisitToServer(all_restaurants[i]._id, selectedIndex, "restaurant");
            days[selectedIndex].restaurants.push(all_restaurants[i]);
            initialize_gmaps(all_restaurants[i].place[0].location[0], all_restaurants[i].place[0].location[1]);
          }
@@ -218,6 +245,11 @@ $(function(){
     $('#days').append(newButton);
     $('#dayNum').text("Day " + count);
   })
+})
+
+$(function(){
+
+
 })
 
 
@@ -266,6 +298,7 @@ $(function(){
       }
     else if(targetId == "restaurantsArr"){
       var restList = days[selectedIndex].restaurants;
+      console.log()
       for(i=0, n = restList.length; i < n; i++){
           if(restList[i].name === (placeName)){
             restList.splice(i, 1);
@@ -277,23 +310,3 @@ $(function(){
     })
   )
 })
-  // var myLatlng = new google.maps.LatLng(-25.363882,131.044922);
-  // var mapOptions = {
-  //   zoom: 4,
-  //   center: myLatlng
-  // }
-  // var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-
-  // // To add the marker to the map, use the 'map' property
-  // var marker = new google.maps.Marker({
-  //     position: myLatlng,
-  //     map: map,
-  //     title:"Hello World!"
-  // });
-
-  // marker.setMap(map);
-
-
-
-// console.log(all_hotels[0].name);
-

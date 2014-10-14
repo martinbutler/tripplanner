@@ -24,9 +24,9 @@ var hotelSchema = new Schema({
 
 var daySchema = new Schema({
   day_number: Number,
-  hotels: {type: [hotelSchema], min: 1, max: 1},
-  restaurants: {type: [restaurantSchema], min: 1, max: 3},
-  thingsToDo: {type: [thingsToDoSchema], min: 1, max: 6}
+  hotels: { type: Schema.Types.ObjectId, ref: 'Hotel' },
+  restaurants: [{ type: Schema.Types.ObjectId, ref: 'Restaurant' }],
+  thingsToDo: [{ type: Schema.Types.ObjectId, ref: 'ThingsToDo' }]
 });
 
 var thingsToDoSchema = new Schema({

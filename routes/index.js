@@ -5,7 +5,7 @@ var models = require('../models');
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  console.log('hello');
+  // console.log('hello');
   var hotels, thingsToDo, restaurants;
   // var finished = _.after(3, doRender);  // TRY THIS WITH UNDERSCORE.JS
   var count = 0;
