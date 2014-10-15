@@ -134,6 +134,7 @@ function addDay() {
     thingsToDo: [],
     restaurants: []
   });
+
     writeDayToServer(selectedIndex);
 }
 
@@ -232,25 +233,39 @@ $(function(){
 
 
 $(function(){
-  var count = 1
+
+  
   var $blankPlan = $('.dayplan').clone()
   $('.addDay').click(function(){
+    var count = days.length;
     $('.dayplan').replaceWith($blankPlan.clone());
-    count += 1;
-    selectedIndex = count - 1;
+    selectedIndex = count;
     addDay();
-    var newButton = '<button type="button" class="btn btn-default btn-primary btn-sm">Day ' + count + '</button>';
+    var newButton = '<button type="button" class="btn btn-default btn-primary btn-sm">Day ' + (count+ 1) + '</button>';
     // console.log(count);
     $('#days').children().removeClass('btn-primary');
     $('#days').append(newButton);
-    $('#dayNum').text("Day " + count);
+    $('#dayNum').text("Day " + (count + 1));
   })
 })
 
-$(function(){
+
+function deleteVisitToServer(attraction_id, dayId, type_of_place){
+  var post_data = {
+    attraction_id: attraction_id,
+    attraction_type: type_of_place, 
+    dayId: dayId
+  };
+
+  var post_callback = function(responseData){
+    console.log("dog");
+  }
+
+  $.post("/days/" + dayId + "/delete", post_data, post_callback)
+}
 
 
-})
+
 
 
 $(function(){
@@ -282,31 +297,92 @@ $(function(){
 })
 
 $(function(){
-  $('.planBox').on('click', '.delete', (function(e){
+  $('.planBox').on('click', 'ul > li > a', (function(e){
     var targetId = $(e.target).parent().parent()[0].id;
     var placeName = $(e.target).parent()[0].childNodes[0].data;
+    var typePlace;
+    var att_id;
+
+
     if(targetId == "hotelArr"){
+      att_id = days[selectedIndex].hotel._id;
       days[selectedIndex].hotel = null;
+      typePlace = "hotel";
     }
     else if(targetId == "thingsArr"){
       var thingList = days[selectedIndex].thingsToDo;
-      for(i=0, n = thingList.length; i < n; i++){
+      for(i=0; i < thingList.length; i++){
           if(thingList[i].name === (placeName)){
+            att_id = thingList[i]._id;
             thingList.splice(i, 1);
+            typePlace = "thing"
+            i = n;
           }
         }
       }
     else if(targetId == "restaurantsArr"){
       var restList = days[selectedIndex].restaurants;
-      console.log()
-      for(i=0, n = restList.length; i < n; i++){
+      for(i=0; i < restList.length; i++){
           if(restList[i].name === (placeName)){
+            att_id = restList[i]._id;
             restList.splice(i, 1);
+            typePlace = "restaurant";
+            i = n;
           }
         }
       }
+      console.log(att_id, selectedIndex, typePlace);
+    deleteVisitToServer(att_id, selectedIndex, typePlace);
     $(e.target).parent().remove();
     initialize_gmaps();
     })
   )
 })
+
+
+$(function(){
+  if(all_dayData){
+    all_dayData.forEach(function(day){
+      var n = all_dayData.indexOf(day)
+      if (n > 0){
+        addDay();
+        var newButton = '<button type="button" class="btn btn-default btn-sm">Day ' + (n + 1) + '</button>';
+        $('#days').append(newButton);
+      }
+      if(day.hotels){
+        if(day.hotels){
+          days[n].hotel = day.hotels;
+        }
+        if(n === 0){
+          $('#hotelArr').append('<li>' + day.hotels.name + '<br><a class="delete">Remove</a></li>');
+        }
+      }
+      day.thingsToDo.forEach(function(thing){
+        days[n].thingsToDo.push(thing);
+        if(n === 0){
+          $('#thingsArr').append('<li>' + thing.name + '<br><a class="delete">Remove</a></li>');
+        }
+      })
+      day.restaurants.forEach(function(rest){
+        days[n].restaurants.push(rest);
+        if(n === 0){
+          $('#restaurantsArr').append('<li>' + rest.name + '<br><a class="delete">Remove</a></li>');
+        }
+      })
+      // if(n === 0){
+      //   $('#thingsArr').append('<li>' + val + '<br><a class="delete">Remove</a></li>');
+      //   $('#hotelArr').html('<li>' + val + '<br><a class="delete">Remove</a></li>');
+      //   $('#restaur9antsArr').append('<li>' + val + '<br><a class="delete">Remove</a></li>');
+      // }
+      initialize_gmaps();
+    })
+  }
+})
+
+
+
+
+
+
+
+

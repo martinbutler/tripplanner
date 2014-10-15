@@ -11,6 +11,7 @@ router.post('/', function(req, res) {
 	    p.save();
 	  }
 	})
+	res.end();
 
 });
 
@@ -29,12 +30,26 @@ router.post('/:dayId/attractions', function(req, res) {
 	 	}
 	   result.save();
 	 })
+	res.end();
 });
 
-router.get('/:dayId/attractions/delete', function(req, res) {
-  models.Day.findOneAndRemove({url_name: req.params.url_name}, function (err, data){
-    res.redirect('/');
-  })
+router.post('/:dayId/delete', function(req, res) {
+	models.Day.findOne({"day_number":req.body.dayId}, function(err, result) {
+	   // console.log("reqbodyAttType= "+ req.body.attraction_type);
+	   switch (req.body.attraction_type) {
+	     case "hotel":
+	       result.hotels = null;
+	       break;
+	     case "thing":
+	       result.thingsToDo.splice(result.thingsToDo.indexOf(req.body.attraction_id), 1);
+	       break;
+	     case "restaurant":
+	       result.restaurants.splice(result.restaurants.indexOf(req.body.attraction_id), 1);
+	       break;  
+	   }
+	   result.save();
+	 })
+	res.end();
 });
 
 router.get('/', function(req, res) {

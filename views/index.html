@@ -12,11 +12,13 @@
     			</div>
     			<div class="btn-group">
     			  <button type="button" class="btn btn-default btn-sm addDay">+ Add Day</button>
-    			</div>
+<!--     			  <button type="button" class="btn btn-danger btn-sm deleteDay">Delete Day</button>
+ -->    			</div>
     		</div>
     		<div class="planBox">
 	    		<div class="dayplan">
 	    			<h2 id="dayNum">Day 1</h2>
+	    			<button type="button" class="btn btn-danger btn-sm deleteDay">Delete Day</button>
 	    			<ul>
 	    				<li><h3>Hotel</h3></li>
 	    					<ul id = "hotelArr">
@@ -94,6 +96,7 @@
 var all_hotels = {{ hotels | json }};
 var all_restaurants = {{ restaurants | json }};
 var all_things_to_do = {{ thingsToDo | json }};
+var all_dayData = {{dayData | json}}
 {% endautoescape %}
  
 </script>
